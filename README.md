@@ -12,7 +12,7 @@ npm run pw:install
 npm test
 npm run report                //This will install dependencies & browsers, run tests headless, and open the Playwright HTML report locally.//
 
-      CI
+            CI
 
 GitHub Actions workflow lives in .github/workflows/playwright.yml.
 On each push / pull request it:
@@ -21,7 +21,7 @@ runs the test suite in headless mode
 uploads the Playwright HTML report as an artifact
 (optional) can upload Allure results for advanced reporting
 
-      Project structure
+            Project structure
 
 tests/
   helpers/
@@ -36,7 +36,7 @@ tests/
 playwright.config.ts
 tsconfig.json
 
-    NPM scripts
+                NPM scripts
 {
   "scripts": {
     "pw:install": "npx playwright install --with-deps",
@@ -47,7 +47,7 @@ tsconfig.json
     "report": "playwright show-report --port 0"
   }
 }
-      Useful:
+                  Useful:
 
 npm run test:ui – visual test runner
 
@@ -55,7 +55,7 @@ npm run test:headed – runs with a visible browser
 
 npm run test:debug – opens the Playwright inspector
 
-      Tech notes
+                  Tech notes
 
 Selectors: prefer role-based locators; centralize CSS in tests/helpers/selectors.ts.
 
