@@ -1,6 +1,6 @@
 # Todor Stavrev's Playwright Portfolio Project
  If you want the CI badge, uncomment the next line
-<!-- [![Playwright CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml) -->
+[![Playwright CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml)
 
 End-to-end UI tests for [Playwright](https://playwright.dev) using **Playwright**, **TypeScript**, and the **Page Object Model (POM)**.  
 Includes HTML reporting and a GitHub Actions CI workflow.
