@@ -5,6 +5,12 @@ Includes HTML reporting and a GitHub Actions CI workflow.
 
 ## Quick start
 
+```bash
+npm i
+npm run pw:install
+npm test
+npm run report
+
 ## CI
 
 GitHub Actions workflow lives in `.github/workflows/playwright.yml`.
