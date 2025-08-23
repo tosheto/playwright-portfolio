@@ -1,0 +1,16 @@
+# dependencies
+node_modules
+
+# Playwright reports and results
+playwright-report
+test-results
+
+# Allure results
+allure-results
+allure-report
+
+# build outputs
+dist
+
+# system files
+.DS_Store
