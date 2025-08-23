@@ -14,7 +14,11 @@ npm test
 npm run report
 This will install dependencies & browsers, run tests headless, and open the Playwright HTML report locally.
 
+---
+
 CI
+
+```bash
 GitHub Actions workflow lives in .github/workflows/playwright.yml.
 
 On each push / pull request it:
