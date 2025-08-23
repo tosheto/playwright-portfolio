@@ -1,3 +1,5 @@
+[![Playwright CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml)
+
 name: Playwright CI
 
 on:
