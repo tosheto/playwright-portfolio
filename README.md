@@ -10,7 +10,7 @@ Includes HTML reporting and a GitHub Actions CI workflow.
 npm i
 npm run pw:install
 npm test
-npm run report                //This will install dependencies & browsers, run tests headless, and open the Playwright HTML report locally.//
+npm run report           //Install dependencies & browsers, run tests headless, and open HTML report locally.//
 
             CI
 
