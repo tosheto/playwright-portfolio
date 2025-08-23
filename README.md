@@ -62,3 +62,10 @@ Selectors: prefer role-based locators; centralize CSS in tests/helpers/selectors
 Resilience: retries, traces, screenshots, and videos are enabled in playwright.config.ts.
 
 POM: page classes encapsulate navigation and actions for maintainability.
+
+            Run a specific test
+# by file
+npx playwright test tests/specs/docs.spec.ts
+
+# or by title
+npx playwright test -g "assertions page shows code block"
