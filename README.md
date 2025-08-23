@@ -12,4 +12,3 @@ npm i
 npm run pw:install
 npm test
 npm run report
-onally) uploads Allure results for advanced reporting
