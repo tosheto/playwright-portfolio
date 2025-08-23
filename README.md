@@ -13,6 +13,7 @@ npm run report
 
 ## CI
 
+```bash
 GitHub Actions workflow lives in `.github/workflows/playwright.yml`.
 
 On each push/PR it:
