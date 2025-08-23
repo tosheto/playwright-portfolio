@@ -3,7 +3,6 @@
 End-to-end UI tests for [Playwright](https://playwright.dev) using **Playwright**, **TypeScript**, and the **Page Object Model (POM)**.  
 Includes HTML reporting and a GitHub Actions CI workflow.
 
----
 
 ## Quick start
 
