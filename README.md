@@ -1,4 +1,4 @@
-# Todor Stavrev's Playwright Portfolio Project [![Playwright CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml)
+# Todor Stavrev's Playwright Portfolio Project
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
 ![Playwright](https://img.shields.io/badge/Playwright-1.46+-green)
