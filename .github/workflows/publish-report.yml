@@ -1,0 +1,63 @@
+name: Publish Reports (GitHub Pages)
+
+on:
+  workflow_run:
+    workflows: ["Playwright CI"]   # Името на твоето тестово workflow
+    types: [completed]
+
+permissions:
+  contents: write                  # нужно за пуш в gh-pages
+
+jobs:
+  publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Allure HTML report
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-html-report          # ИМЕТО ТОЧНО КАКТО Е В upload-artifact
+          path: site/allure                 # ще се разархивира тук
+
+      - name: Download Playwright HTML report
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-html-report      # ИМЕТО ТОЧНО КАКТО Е В upload-artifact
+          path: site/playwright
+
+      - name: Create index.html with links
+        run: |
+          mkdir -p site
+          cat > site/index.html <<'HTML'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>Test Reports</title>
+            <style>
+              body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;max-width:900px;margin:40px auto;padding:0 16px;line-height:1.5}
+              a{display:block;margin:12px 0;font-size:1.1rem}
+              .card{border:1px solid #eee;border-radius:12px;padding:20px}
+              h1{margin:0 0 12px}
+              .note{color:#666;font-size:.95rem}
+            </style>
+          </head>
+          <body>
+            <h1>Test Reports</h1>
+            <div class="card">
+              <a href="./allure/index.html">Allure report →</a>
+              <a href="./playwright/index.html">Playwright HTML report →</a>
+              <p class="note">Тези репорти са от последния успешен рън на <b>Playwright CI</b>.</p>
+            </div>
+          </body>
+          </html>
+          HTML
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site
+          publish_branch: gh-pages
