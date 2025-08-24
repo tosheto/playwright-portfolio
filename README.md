@@ -1,5 +1,10 @@
 # Todor Stavrev's Playwright Portfolio Project [![Playwright CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml)
 
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![Playwright](https://img.shields.io/badge/Playwright-1.46+-green)
+[![CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml)
+
+
 End-to-end UI tests for [Playwright](https://playwright.dev) using **Playwright**, **TypeScript**, and the **Page Object Model (POM)**.  
 Includes HTML reporting and a GitHub Actions CI workflow.
 
