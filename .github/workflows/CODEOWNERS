@@ -1,0 +1,10 @@
+# Page Object Model and helpers
+/tests/pages/**     @tosheto
+/tests/helpers/**   @tosheto
+/tests/specs/**     @tosheto
+
+# CI workflows ownership
+/.github/workflows/**  @tosheto
+
+# Fallback for everything else
+* @tosheto
