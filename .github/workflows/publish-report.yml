@@ -2,11 +2,12 @@ name: Publish Reports (GitHub Pages)
 
 on:
   workflow_run:
-    workflows: ["Playwright CI"]   # Името на твоето тестово workflow
+    workflows: ["Playwright CI"]   # name of testing workflow
     types: [completed]
 
 permissions:
-  contents: write                  # нужно за пуш в gh-pages
+  actions: read        # necesary for reading artifacts from other workflows
+  contents: write      # necessary to push via gh-pages
 
 jobs:
   publish:
@@ -17,14 +18,16 @@ jobs:
       - name: Download Allure HTML report
         uses: actions/download-artifact@v4
         with:
-          name: allure-html-report          # ИМЕТО ТОЧНО КАКТО Е В upload-artifact
-          path: site/allure                 # ще се разархивира тук
+          name: allure-html-report          # Exact name from upload step
+          path: site/allure
+          run-id: ${{ github.event.workflow_run.id }}
 
       - name: Download Playwright HTML report
         uses: actions/download-artifact@v4
         with:
-          name: playwright-html-report      # ИМЕТО ТОЧНО КАКТО Е В upload-artifact
+          name: playwright-html-report      # Exact name from upload step
           path: site/playwright
+          run-id: ${{ github.event.workflow_run.id }}
 
       - name: Create index.html with links
         run: |
@@ -49,7 +52,7 @@ jobs:
             <div class="card">
               <a href="./allure/index.html">Allure report →</a>
               <a href="./playwright/index.html">Playwright HTML report →</a>
-              <p class="note">Тези репорти са от последния успешен рън на <b>Playwright CI</b>.</p>
+              <p class="note">От последния успешен рън на <b>Playwright CI</b>.</p>
             </div>
           </body>
           </html>
