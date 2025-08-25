@@ -15,6 +15,10 @@
 - [Allure HTML Report](https://tosheto.github.io/playwright-portfolio/allure-report/index.html) – advanced analytics (suites, categories, history, trends).  
 
 Reports are regenerated automatically after every CI run.  
+ℹ️ Notes
+
+📌 Everything (tests + CI + reports) is kept in the main branch for simplicity.
+This is intentional – since this repo is a QA portfolio project, the goal is to make it easy to clone, run and demonstrate without extra branching complexity.
 
 ---
 
