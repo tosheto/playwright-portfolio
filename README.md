@@ -55,9 +55,7 @@ Run the tests in headless mode.
 Publish reports to GitHub Pages → Live reports.
 
 📂 Project structure
-arduino
-Copy
-Edit
+
 tests/
   helpers/
     selectors.ts
@@ -70,10 +68,9 @@ tests/
     codeblocks.spec.ts
 playwright.config.ts
 tsconfig.json
+
 📜 NPM scripts
-json
-Copy
-Edit
+
 {
   "pw:install": "npx playwright install --with-deps",
   "test": "playwright test",
@@ -96,9 +93,7 @@ Resilience: retries, traces, screenshots & videos are enabled in playwright.conf
 POM: page classes encapsulate navigation and actions.
 
 🎯 Run a specific test
-bash
-Copy
-Edit
+
 # by file
 npx playwright test tests/specs/docs.spec.ts
 
