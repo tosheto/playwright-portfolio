@@ -1,8 +1,9 @@
-# Playwright Portfolio
+# 🎭 Todor Stavrev's Playwright Portfolio Project
 
-[![CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)
-](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml)  
-[![Reports](https://img.shields.io/badge/Test%20Reports-GitHub%20Pages-blue)](https://tosheto.github.io/playwright-portfolio/)  
+[![CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml)  
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![Playwright](https://img.shields.io/badge/Playwright-1.46+-green)
+[![Reports](https://img.shields.io/badge/📊%20Test%20Reports-Live%20on%20GitHub%20Pages-brightgreen)](https://tosheto.github.io/playwright-portfolio/)
 
 ---
 
@@ -10,56 +11,96 @@
 
 👉 [**View the latest reports here**](https://tosheto.github.io/playwright-portfolio/)  
 
-- **Playwright HTML Report** – interactive run details (steps, logs, screenshots).  
-- **Allure HTML Report** – advanced analytics (suites, categories, history, trends).  
+- [Playwright HTML Report](https://tosheto.github.io/playwright-portfolio/playwright-report/index.html) – interactive run details (steps, logs, screenshots).  
+- [Allure HTML Report](https://tosheto.github.io/playwright-portfolio/allure-report/index.html) – advanced analytics (suites, categories, history, trends).  
 
-Reports are automatically updated after every successful GitHub Actions run.
+Reports are regenerated automatically after every CI run.  
 
 ---
 
 ## 📖 Project Overview
 
-This portfolio project demonstrates **end-to-end UI testing** with  
-[Playwright](https://playwright.dev/), **TypeScript**, and the **Page Object Model (POM)** pattern.  
+This project demonstrates **end-to-end UI tests** with:  
+- [Playwright](https://playwright.dev/)  
+- **TypeScript**  
+- **Page Object Model (POM)**  
 
-It is designed as a **QA showcase** to present:  
-- Modern test automation with Playwright.  
-- Structured Page Object Models.  
-- Multiple reporting integrations (Playwright + Allure).  
-- CI/CD with GitHub Actions and publishing results to GitHub Pages.  
+It serves as a **QA portfolio showcase**:  
+- Modern Playwright test automation  
+- Page Object Models for maintainability  
+- Multiple reporting integrations (Playwright + Allure)  
+- CI/CD with GitHub Actions + GitHub Pages  
 
 ---
 
-## 🚀 Quick start (local run)
+## 🚀 Quick start
 
 ```bash
-npm install
-npx playwright install
+npm i
+npm run pw:install
 npm test
 npm run report
-npm test → runs the tests with configured reporters.
+npm test → run the full test suite.
 
-npm run report → opens the Playwright HTML report locally.
+npm run report → open the Playwright HTML report locally.
 
-⚙️ CI / CD Workflow
-Workflow file: .github/workflows/playwright.yml
+⚙️ CI Workflow
+The GitHub Actions workflow lives in .github/workflows/playwright.yml.
+On each push / PR it will:
 
-On each push or pull_request:
+Install dependencies and Playwright browsers.
 
-Installs dependencies and Playwright browsers.
+Run the tests in headless mode.
 
-Runs the tests in headless mode.
-
-Publishes reports to GitHub Pages → live reports.
+Publish reports to GitHub Pages → Live reports.
 
 📂 Project structure
+arduino
+Copy
+Edit
+tests/
+  helpers/
+    selectors.ts
+  pages/
+    HomePage.ts
+    DocsPage.ts
+  specs/
+    home.spec.ts
+    docs.spec.ts
+    codeblocks.spec.ts
+playwright.config.ts
+tsconfig.json
+📜 NPM scripts
+json
+Copy
+Edit
+{
+  "pw:install": "npx playwright install --with-deps",
+  "test": "playwright test",
+  "test:ui": "playwright test --ui",
+  "test:headed": "playwright test --headed",
+  "test:debug": "PWDEBUG=1 playwright test",
+  "report": "playwright show-report --port 0"
+}
+npm run test:ui – visual test runner
+
+npm run test:headed – runs with a visible browser
+
+npm run test:debug – opens the Playwright inspector
+
+🧑‍💻 Tech notes
+Selectors: prefer role-based locators; CSS kept in tests/helpers/selectors.ts.
+
+Resilience: retries, traces, screenshots & videos are enabled in playwright.config.ts.
+
+POM: page classes encapsulate navigation and actions.
+
+🎯 Run a specific test
 bash
 Copy
 Edit
-tests/              # Test specs
-tests/pages/        # Page Object Models
-tests/fixtures/     # Fixtures and utilities
-playwright.config.ts
-ℹ️ Notes
-📌 Everything (tests + CI + reports) is kept in the main branch for simplicity.
-This is intentional – since this repo is a QA portfolio project, the goal is to make it easy to clone, run and demonstrate without extra branching complexity.
+# by file
+npx playwright test tests/specs/docs.spec.ts
+
+# by title
+npx playwright test -g "assertions page shows code block"
