@@ -29,10 +29,15 @@ It serves as a **QA portfolio showcase**:
 - Modern Playwright test automation  
 - Page Object Models for maintainability  
 - Multiple reporting integrations (Playwright + Allure)  
-- CI/CD with GitHub Actions + GitHub Pages
+- CI/CD with GitHub Actions + GitHub Pages  
+- **API tests** with Playwright `APIRequestContext` (GET/POST, assertions).  
+- **Failure artifacts** – on any failed test, Playwright automatically captures:  
+  - Full-page **screenshots**  
+  - **Video recording** of the test  
+  - **Trace files** with step-by-step execution  
 
-ℹ️ Notes
-📌 Everything (tests + CI + reports) is kept in the main branch for simplicity.
+ℹ️ Notes  
+📌 Everything (tests + CI + reports) is kept in the main branch for simplicity.  
 This is intentional – since this repo is a QA portfolio project, the goal is to make it easy to clone, run and demonstrate without extra branching complexity.
 
 ---
@@ -46,7 +51,7 @@ npm test
 npm run report
 npm test → run the full test suite.
 
-npm run report → open https://tosheto.github.io/playwright-portfolio/ to see reports
+npm run report → open reports locally.
 
 ⚙️ CI Workflow
 The GitHub Actions workflow lives in .github/workflows/playwright.yml.
@@ -59,7 +64,9 @@ Run the tests in headless mode.
 Publish reports to GitHub Pages → Live reports.
 
 📂 Project structure
-
+arduino
+Copy
+Edit
 tests/
   helpers/
     selectors.ts
@@ -70,11 +77,14 @@ tests/
     home.spec.ts
     docs.spec.ts
     codeblocks.spec.ts
+    api.spec.ts
+    artifacts-demo.spec.ts
 playwright.config.ts
 tsconfig.json
-
 📜 NPM scripts
-
+json
+Copy
+Edit
 {
   "pw:install": "npx playwright install --with-deps",
   "test": "playwright test",
@@ -96,10 +106,14 @@ Resilience: retries, traces, screenshots & videos are enabled in playwright.conf
 
 POM: page classes encapsulate navigation and actions.
 
-🎯 Run a specific test
+Artifacts: every failed test generates trace, video and screenshot for debugging.
 
+🎯 Run a specific test
+bash
+Copy
+Edit
 # by file
 npx playwright test tests/specs/docs.spec.ts
 
-# by title
+# or by title
 npx playwright test -g "assertions page shows code block"
