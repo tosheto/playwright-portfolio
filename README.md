@@ -1,6 +1,7 @@
 # Playwright Portfolio
 
-[![CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml)  
+[![CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)
+](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml)  
 [![Reports](https://img.shields.io/badge/Test%20Reports-GitHub%20Pages-blue)](https://tosheto.github.io/playwright-portfolio/)  
 
 ---
