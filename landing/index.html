@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Playwright Portfolio – Test Reports</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✅</text></svg>">
+  <style>
+    :root{
+      --bg:#0b1020; --card:#12172b; --muted:#a3acc2; --text:#e7ecf7; --primary:#6ee7b7; --link:#7aa2ff;
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;
+      background: radial-gradient(1200px 700px at 10% -10%,#1a2250 0%,transparent 60%), radial-gradient(900px 500px at 110% 10%,#11203a 0%,transparent 60%), var(--bg);
+      color:var(--text); line-height:1.45;
+    }
+    .wrap{max-width:1000px; margin:0 auto; padding:32px 20px 48px}
+    header{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px}
+    .title{font-size:clamp(26px,3.4vw,34px); font-weight:800; letter-spacing:.2px}
+    .muted{color:var(--muted)}
+    .badges{display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 24px}
+    .badge{
+      font-size:12px; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.06); color:var(--muted); border:1px solid rgba(255,255,255,.08)
+    }
+    .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:20px; box-shadow:0 10px 30px rgba(0,0,0,.25);
+      transition:.2s transform,.2s box-shadow,.2s border-color
+    }
+    .card:hover{transform:translateY(-2px); box-shadow:0 14px 34px rgba(0,0,0,.35); border-color:rgba(126,167,255,.35)}
+    .card h3{margin:0 0 8px; font-size:18px}
+    .desc{color:var(--muted); font-size:14px; margin:0 0 14px}
+    .btn{
+      display:inline-block; padding:10px 14px; border-radius:10px; text-decoration:none; color:#0b1020; font-weight:700;
+      background:linear-gradient(90deg,#7aa2ff,#6ee7b7); box-shadow:0 6px 18px rgba(122,162,255,.25); transition:.15s transform
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .footer{margin-top:28px; font-size:13px; color:var(--muted)}
+    .links{display:flex; gap:14px; flex-wrap:wrap}
+    .links a{color:var(--link); text-decoration:none}
+    .links a:hover{text-decoration:underline}
+    .pill{padding:3px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.14); color:var(--muted); font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="title">Playwright Portfolio – Test Reports</div>
+        <div class="muted">End-to-end UI tests with Playwright, TypeScript & POM. CI publishes fresh HTML & Allure reports.</div>
+      </div>
+      <div class="pill" title="UTC build time">Updated: <strong>{{BUILD_TIME}}</strong></div>
+    </header>
+
+    <div class="badges">
+      <div class="badge">Node 20</div>
+      <div class="badge">TypeScript 5.x</div>
+      <div class="badge">Playwright 1.46+</div>
+      <div class="badge">Reports: HTML & Allure</div>
+    </div>
+
+    <section class="grid">
+      <article class="card">
+        <h3>Playwright HTML report</h3>
+        <p class="desc">Fast, built-in UI showing tests, steps, screenshots, traces.</p>
+        <a class="btn" href="{{PLAYWRIGHT_URL}}">Open HTML report</a>
+      </article>
+
+      <article class="card">
+        <h3>Allure HTML report</h3>
+        <p class="desc">Rich dashboards, suites, timelines and categories for trends.</p>
+        <a class="btn" href="{{ALLURE_URL}}">Open Allure report</a>
+      </article>
+
+      <article class="card">
+        <h3>Repository</h3>
+        <p class="desc">Browse the code, config and CI workflow used to publish this page.</p>
+        <a class="btn" href="https://github.com/tosheto/playwright-portfolio" target="_blank" rel="noopener">Open on GitHub</a>
+      </article>
+    </section>
+
+    <div class="footer">
+      <div class="links">
+        <a href="https://playwright.dev" target="_blank" rel="noopener">Playwright</a>
+        <a href="https://docs.qameta.io/allure/" target="_blank" rel="noopener">Allure</a>
+        <a href="https://github.com/actions" target="_blank" rel="noopener">GitHub Actions</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

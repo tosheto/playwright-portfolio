@@ -1,19 +1,17 @@
-name: CI & Publish reports
+name: Playwright CI & Publish reports
 
 on:
   push:
     branches: [ main, master ]
   pull_request:
 
-# Needed for GitHub Pages
+# Default minimal permissions; deploy job will get extra pages permissions
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   test:
@@ -26,7 +24,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
 
       - name: Install dependencies
         run: npm ci
@@ -34,50 +32,93 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      # Run tests with HTML + Allure reporters
+      # Run tests with both HTML + Allure reporters
       - name: Run Playwright tests
         run: npx playwright test --reporter=line,html,allure-playwright
 
-      # Java is required by allure-commandline
+      # Upload Playwright HTML report as artifact (for debugging/history)
+      - name: Upload Playwright HTML report (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      # Check if Allure results exist to avoid failures when empty
+      - name: Check if Allure results exist
+        id: allure_check
+        shell: bash
+        run: |
+          if compgen -G "allure-results/*" > /dev/null; then
+            echo "has_results=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_results=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Java only if we actually have Allure results
       - name: Setup Java (for Allure)
+        if: ${{ always() && steps.allure_check.outputs.has_results == 'true' }}
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '17'
 
       - name: Generate Allure HTML
+        if: ${{ always() && steps.allure_check.outputs.has_results == 'true' }}
         run: npx allure generate ./allure-results --clean -o ./allure-report
 
-      # Build static site to publish
-      - name: Prepare site
+      - name: Upload Allure HTML report (artifact)
+        if: ${{ always() && steps.allure_check.outputs.has_results == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-html-report
+          path: allure-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      # --- Build "site/" folder for GitHub Pages ---
+      - name: Prepare site folder
+        if: always()
         run: |
           rm -rf site
           mkdir -p site
-          cp -r playwright-report site/playwright-report
-          cp -r allure-report site/allure-report
-          cat > site/index.html <<'HTML'
-          <!doctype html><meta charset="utf-8">
-          <title>Test Reports</title>
-          <h1>Test Reports</h1>
-          <ul>
-            <li><a href="./playwright-report/index.html">Playwright HTML report</a></li>
-            <li><a href="./allure-report/index.html">Allure HTML report</a></li>
-          </ul>
-          HTML
+          cp -r playwright-report site/
+          if [ -d "allure-report" ]; then cp -r allure-report site/; fi
 
-      # Upload the site as a GitHub Pages artifact
-      - name: Upload Pages artifact
+      - name: Copy landing page and inject links
+        if: always()
+        shell: bash
+        run: |
+          cp landing/index.html site/index.html
+          # Replace placeholders with actual URLs + build time
+          sed -i \
+            -e "s|{{PLAYWRIGHT_URL}}|playwright-report/index.html|g" \
+            -e "s|{{ALLURE_URL}}|allure-report/index.html|g" \
+            -e "s|{{BUILD_TIME}}|$(date -u +"%Y-%m-%d %H:%M UTC")|g" \
+            site/index.html
+
+      # Upload the Pages artifact that the deploy job will publish
+      - name: Upload site artifact for Pages
+        if: always()
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
-  publish:
+  deploy:
+    # Deploy only after tests/packaging finish
     needs: test
     runs-on: ubuntu-latest
+    # Required for GitHub Pages
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url }}
+
     steps:
       - name: Deploy to GitHub Pages
-        id: deployment
+        id: deploy
         uses: actions/deploy-pages@v4
