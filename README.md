@@ -1,6 +1,6 @@
 # 🎭 Todor Stavrev's Playwright Portfolio Project
 
-[![CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml)  
+[![CI](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tosheto/playwright-portfolio/actions/workflows/playwright.yml)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
 ![Playwright](https://img.shields.io/badge/Playwright-1.46+-green)
 [![Reports](https://img.shields.io/badge/📊%20Test%20Reports-Live%20on%20GitHub%20Pages-brightgreen)](https://tosheto.github.io/playwright-portfolio/)
@@ -9,36 +9,28 @@
 
 ## 🔗 Live Reports
 
-👉 [**View the latest reports here**](https://tosheto.github.io/playwright-portfolio/)  
+👉 **Latest run:** https://tosheto.github.io/playwright-portfolio/
 
-- [Playwright HTML Report](https://tosheto.github.io/playwright-portfolio/playwright-report/index.html) – interactive run details (steps, logs, screenshots).  
-- [Allure HTML Report](https://tosheto.github.io/playwright-portfolio/allure-report/index.html) – advanced analytics (suites, categories, history, trends).  
+- **Playwright HTML Report** – interactive run details (steps, logs, screenshots):  
+  https://tosheto.github.io/playwright-portfolio/playwright-report/index.html
+- **Allure Report** – suites, categories, trends & analytics:  
+  https://tosheto.github.io/playwright-portfolio/allure-report/index.html
 
-Reports are regenerated automatically after every CI run.  
+Reports are re-generated on every CI run.
 
 ---
 
-## 📖 Project Overview
+## 📖 Overview
 
-This project demonstrates **end-to-end UI tests** with:  
-- [Playwright](https://playwright.dev/)  
-- **TypeScript**  
-- **Page Object Model (POM)**  
+This is a **QA portfolio** showcasing:
 
-It serves as a **QA portfolio showcase**:  
-- Modern Playwright test automation  
-- Page Object Models for maintainability  
-- Multiple reporting integrations (Playwright + Allure)  
-- CI/CD with GitHub Actions + GitHub Pages  
-- **API tests** with Playwright `APIRequestContext` (GET/POST, assertions).  
-- **Failure artifacts** – on any failed test, Playwright automatically captures:  
-  - Full-page **screenshots**  
-  - **Video recording** of the test  
-  - **Trace files** with step-by-step execution  
+- ✅ UI tests with **Playwright + TypeScript**
+- 🧩 **Page Object Model (POM)** for maintainability
+- 🌐 **API tests** using Playwright `APIRequestContext` (GET/POST + assertions)
+- 🎞️ **Failure artifacts** on any failed test: **screenshot**, **video**, **trace**
+- ⚙️ CI/CD with **GitHub Actions**, reports published to **GitHub Pages**
 
-ℹ️ Notes  
-📌 Everything (tests + CI + reports) is kept in the main branch for simplicity.  
-This is intentional – since this repo is a QA portfolio project, the goal is to make it easy to clone, run and demonstrate without extra branching complexity.
+> Note: Everything (tests, CI and reports) lives in **main** on purpose — simpler to clone, run and review for a portfolio project.
 
 ---
 
@@ -49,71 +41,65 @@ npm i
 npm run pw:install
 npm test
 npm run report
-npm test → run the full test suite.
+npm test → runs the full suite headlessly
 
-npm run report → open reports locally.
+npm run report → opens the local Playwright HTML report
 
-⚙️ CI Workflow
-The GitHub Actions workflow lives in .github/workflows/playwright.yml.
-On each push / PR it will:
+Run a single test
 
-Install dependencies and Playwright browsers.
-
-Run the tests in headless mode.
-
-Publish reports to GitHub Pages → Live reports.
-
-📂 Project structure
-arduino
-Copy
-Edit
-tests/
-  helpers/
-    selectors.ts
-  pages/
-    HomePage.ts
-    DocsPage.ts
-  specs/
-    home.spec.ts
-    docs.spec.ts
-    codeblocks.spec.ts
-    api.spec.ts
-    artifacts-demo.spec.ts
-playwright.config.ts
-tsconfig.json
-📜 NPM scripts
-json
-Copy
-Edit
-{
-  "pw:install": "npx playwright install --with-deps",
-  "test": "playwright test",
-  "test:ui": "playwright test --ui",
-  "test:headed": "playwright test --headed",
-  "test:debug": "PWDEBUG=1 playwright test",
-  "report": "playwright show-report --port 0"
-}
-npm run test:ui – visual test runner
-
-npm run test:headed – runs with a visible browser
-
-npm run test:debug – opens the Playwright inspector
-
-🧑‍💻 Tech notes
-Selectors: prefer role-based locators; CSS kept in tests/helpers/selectors.ts.
-
-Resilience: retries, traces, screenshots & videos are enabled in playwright.config.ts.
-
-POM: page classes encapsulate navigation and actions.
-
-Artifacts: every failed test generates trace, video and screenshot for debugging.
-
-🎯 Run a specific test
-bash
-Copy
-Edit
 # by file
 npx playwright test tests/specs/docs.spec.ts
 
-# or by title
+# by title
 npx playwright test -g "assertions page shows code block"
+🧪 What’s inside
+UI specs: tests/specs/*.spec.ts
+
+API spec: tests/specs/api.spec.ts
+
+Uses request.newContext() + apiContext.get/post(...)
+
+Validates status codes + JSON payloads
+
+Artifacts demo: tests/specs/artifacts-demo.spec.ts
+
+Intentionally fails with test.fail(true, ...) so the run stays ✅ green
+
+Generates trace/video/screenshot for demonstration
+
+Global settings (retries, trace, screenshot, video) are in playwright.config.ts.
+
+📦 Key files
+playwright.config.ts – baseURL, retries, trace/video/screenshot policy, reporters
+
+tests/specs/api.spec.ts – API testing via APIRequestContext (GET/POST)
+
+tests/specs/artifacts-demo.spec.ts – expected-fail test that always produces artifacts
+
+tests/pages/*.ts – Page Objects (navigation & actions)
+
+tests/helpers/selectors.ts – centralized selectors
+
+.github/workflows/playwright.yml – CI pipeline (run → collect reports → publish to Pages)
+
+⚙️ CI Pipeline
+Workflow: .github/workflows/playwright.yml
+
+On each push/PR it:
+
+Installs deps & Playwright browsers
+
+Runs tests headlessly
+
+Uploads the Playwright HTML and (optionally) Allure results
+
+Publishes static reports to GitHub Pages (see links above)
+
+🧑‍💻 Tech notes
+Selectors: prefer role-based locators; CSS centralized in tests/helpers/selectors.ts
+
+Stability: retries + artifacts enabled in config (trace: 'on-first-retry', screenshot: 'only-on-failure', video: 'retain-on-failure')
+
+POM: page classes encapsulate flows and assertions
+
+Artifacts: download/open traces & videos directly from the Playwright report
