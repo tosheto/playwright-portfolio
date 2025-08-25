@@ -46,7 +46,7 @@ npm test
 npm run report
 npm test → run the full test suite.
 
-npm run report → open the Playwright HTML report locally.
+npm run report → open https://tosheto.github.io/playwright-portfolio/ to see reports
 
 ⚙️ CI Workflow
 The GitHub Actions workflow lives in .github/workflows/playwright.yml.
