@@ -1,17 +1,24 @@
-name: Playwright CI
+name: CI & Publish reports
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main]
   pull_request:
+  workflow_dispatch:
 
-# ще публикуваме на gh-pages, затова ни трябва write за съдържанието
 permissions:
-  contents: write
+  contents: read
+  pages: write       # needed to publish with deploy-pages
+  id-token: write    # needed by deploy-pages OIDC
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,7 +26,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: npm ci
@@ -27,77 +34,43 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      # Пусни тестовете с HTML + Allure репортери
-      - name: Run Playwright tests
+      - name: Run Playwright tests (html + allure)
         run: npx playwright test --reporter=line,html,allure-playwright
 
-      # Генерирай Allure HTML от allure-results
+      # Allure needs Java to render the HTML
+      - name: Setup Java (for Allure)
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
       - name: Generate Allure HTML
-        if: always()
         run: npx allure generate ./allure-results --clean -o ./allure-report
 
-      # Качи двата репорта като артефакти
-      - name: Upload Playwright HTML report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-html-report
-          path: playwright-report/
-          if-no-files-found: ignore
-          retention-days: 7
+      - name: Prepare site folder
+        run: |
+          mkdir -p site
+          cp -r playwright-report site/playwright-report
+          cp -r allure-report site/allure-report
+          cat > site/index.html <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8"/>
+          <title>Test Reports</title>
+          <h1>Test Reports</h1>
+          <ul>
+            <li><a href="./playwright-report/index.html">Playwright HTML report</a></li>
+            <li><a href="./allure-report/index.html">Allure HTML report</a></li>
+          </ul>
+          HTML
 
-      - name: Upload Allure HTML report
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: allure-html-report
-          path: allure-report/
-          if-no-files-found: ignore
-          retention-days: 7
+          path: site
 
   publish:
-    # Стартирай само ако test е минал успешно
     needs: test
-    if: ${{ needs.test.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Download Playwright HTML report
-        uses: actions/download-artifact@v4
-        with:
-          name: playwright-html-report
-          path: ./site/playwright-report
-
-      - name: Download Allure HTML report
-        uses: actions/download-artifact@v4
-        with:
-          name: allure-html-report
-          path: ./site/allure-report
-
-      - name: Create index.html with links
-        run: |
-          mkdir -p ./site
-          cat > ./site/index.html <<'EOF'
-          <!doctype html>
-          <meta charset="utf-8">
-          <title>Test Reports</title>
-          <style>
-            body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:760px;margin:40px auto;padding:0 16px}
-            h1{margin-bottom:8px}
-            .card{border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin:12px 0}
-            a{font-weight:600;text-decoration:none}
-          </style>
-          <h1>Test Reports</h1>
-          <div class="card">
-            <p><a href="playwright-report/index.html">➡ Playwright HTML report</a></p>
-          </div>
-          <div class="card">
-            <p><a href="allure-report/index.html">➡ Allure HTML report</a></p>
-          </div>
-          EOF
-
-      - name: Publish to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
-          publish_branch: gh-pages
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
