@@ -29,9 +29,9 @@ It serves as a **QA portfolio showcase**:
 - Modern Playwright test automation  
 - Page Object Models for maintainability  
 - Multiple reporting integrations (Playwright + Allure)  
-- CI/CD with GitHub Actions + GitHub Pages  
-ℹ️ Notes
+- CI/CD with GitHub Actions + GitHub Pages
 
+ℹ️ Notes
 📌 Everything (tests + CI + reports) is kept in the main branch for simplicity.
 This is intentional – since this repo is a QA portfolio project, the goal is to make it easy to clone, run and demonstrate without extra branching complexity.
 
