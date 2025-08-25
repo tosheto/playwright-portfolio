@@ -1,23 +1,24 @@
+// tests/specs/artifacts-demo.spec.ts
 import { test, expect } from '@playwright/test';
 
-test.describe('Artifacts demo (expected fail)', () => {
-  // Force artifacts for this test only
-  test.use({
-    trace: 'on',       // always record trace
-    video: 'on',       // always record video
-    screenshot: 'on',  // capture screenshots for assertions
-  });
+// Enable artifacts only for tests in THIS FILE
+test.use({
+  trace: 'on',        // always record trace
+  video: 'on',        // always record video
+  screenshot: 'on',   // capture screenshots for assertions
+});
 
-  // Mark the block as expected to fail so the overall run stays green
-  test.fail();
+test('artifacts demo (expected fail) – produces trace, video and screenshot', async ({ page }, testInfo) => {
+  // Mark this test as expected to fail so the run stays green
+  test.fail(true, 'Demo failure to produce artifacts (trace/video/screenshot)');
 
-  test('[artifacts-demo] produces trace, video and screenshots', async ({ page }, testInfo) => {
-    await page.goto('https://playwright.dev');
+  await page.goto('/');
 
-    // Manual screenshot (in addition to automatic ones)
-    await page.screenshot({ path: testInfo.outputPath('landing.png'), fullPage: true });
+  // Manual full-page screenshot saved into the test output directory
+  await page.screenshot({ path: testInfo.outputPath('landing.png'), fullPage: true });
 
-    // Intentionally wrong expectation to trigger a failure (expected by design)
-    await expect(page.getByRole('heading', { name: /This heading does not exist/i })).toBeVisible();
-  });
+  // Deliberately wrong assertion -> will fail but marked as expected
+  await expect(
+    page.getByRole('heading', { name: /this heading does not exist/i })
+  ).toBeVisible();
 });
