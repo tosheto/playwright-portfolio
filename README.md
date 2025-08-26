@@ -4,6 +4,8 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
 ![Playwright](https://img.shields.io/badge/Playwright-1.46+-green)
 [![Reports](https://img.shields.io/badge/📊%20Test%20Reports-Live%20on%20GitHub%20Pages-brightgreen)](https://tosheto.github.io/playwright-portfolio/)
+![Algorithms](https://img.shields.io/badge/Algorithms-Ready-informational)
+![Blockchain%20QA](https://img.shields.io/badge/Blockchain%20QA-Portfolio-blueviolet)
 
 ---
 
