@@ -2,7 +2,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  // Тестовете са в папка tests/specs
+  // Tests live under tests/specs
   testDir: './tests/specs',
   testMatch: ['**/*.spec.ts'],
 
@@ -14,27 +14,23 @@ export default defineConfig({
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
-    ['allure-playwright']  // ⬅️ добавяме Allure репортера
+    ['allure-playwright'],
   ],
 
   use: {
     baseURL: 'https://playwright.dev',
     headless: true,
 
-    // 📸 Снимки
-    screenshot: 'only-on-failure',   // 'off' | 'on' | 'only-on-failure'
-
-    // 🎥 Видео
-    video: 'retain-on-failure',      // 'off' | 'on' | 'retain-on-failure'
-
-    // 🧵 Trace Viewer
-    trace: 'retain-on-failure',      // 'off' | 'on' | 'retain-on-failure'
+    // Artifacts
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    trace: 'retain-on-failure', // keep as you have it
   },
 
+  // Parallel cross-browser matrix in a single run
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox',  use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit',   use: { ...devices['Desktop Safari'] } },
   ],
 });
