@@ -69,8 +69,8 @@ npx playwright test -g "assertions page shows code block"
 
 ## ⚙️ CI Pipeline
 
-   Workflow: .github/workflows/playwright.yml
-    On each push/PR it:
+    -  Workflow: .github/workflows/playwright.yml
+    - On each push/PR it:
     - Installs deps & Playwright browsers
     - Runs tests headlessly
     - Uploads the Playwright HTML and (optionally) Allure results
