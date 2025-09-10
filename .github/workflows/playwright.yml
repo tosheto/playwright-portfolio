@@ -15,7 +15,12 @@ concurrency:
 
 jobs:
   test:
+    name: Test (${{ matrix.browser }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
 
     steps:
       - name: Checkout
@@ -25,23 +30,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      - name: Install Playwright browser (${{ matrix.browser }})
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
-      # Run tests with both HTML + Allure reporters
-      - name: Run Playwright tests
-        run: npx playwright test --reporter=line,html,allure-playwright
+      # Run tests with both HTML + Allure reporters for the specific project
+      - name: Run Playwright tests (${{ matrix.browser }})
+        run: npx playwright test --project=${{ matrix.browser }} --reporter=line,html,allure-playwright
 
-      # Upload Playwright HTML report as artifact (for debugging/history)
+      # Upload Playwright HTML report as artifact (per browser)
       - name: Upload Playwright HTML report (artifact)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-html-report
+          name: playwright-html-report-${{ matrix.browser }}
           path: playwright-report/
           if-no-files-found: ignore
           retention-days: 7
@@ -57,7 +63,6 @@ jobs:
             echo "has_results=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # Java only if we actually have Allure results
       - name: Setup Java (for Allure)
         if: ${{ always() && steps.allure_check.outputs.has_results == 'true' }}
         uses: actions/setup-java@v4
@@ -73,52 +78,82 @@ jobs:
         if: ${{ always() && steps.allure_check.outputs.has_results == 'true' }}
         uses: actions/upload-artifact@v4
         with:
-          name: allure-html-report
+          name: allure-html-report-${{ matrix.browser }}
           path: allure-report/
           if-no-files-found: ignore
           retention-days: 7
 
-      # --- Build "site/" folder for GitHub Pages ---
-      - name: Prepare site folder
-        if: always()
-        run: |
-          rm -rf site
-          mkdir -p site
-          cp -r playwright-report site/
-          if [ -d "allure-report" ]; then cp -r allure-report site/; fi
-
-      - name: Copy landing page and inject links
-        if: always()
-        shell: bash
-        run: |
-          cp landing/index.html site/index.html
-          # Replace placeholders with actual URLs + build time
-          sed -i \
-            -e "s|{{PLAYWRIGHT_URL}}|playwright-report/index.html|g" \
-            -e "s|{{ALLURE_URL}}|allure-report/index.html|g" \
-            -e "s|{{BUILD_TIME}}|$(date -u +"%Y-%m-%d %H:%M UTC")|g" \
-            site/index.html
-
-      # Upload the Pages artifact that the deploy job will publish
-      - name: Upload site artifact for Pages
-        if: always()
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-
-  deploy:
-    # Deploy only after tests/packaging finish
+  package-site:
+    name: Package site (aggregate reports)
     needs: test
     runs-on: ubuntu-latest
-    # Required for GitHub Pages
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
 
     steps:
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
+      - name: Checkout (for landing assets)
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+          merge-multiple: true
+
+      - name: Build site folder (per browser)
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf site
+          mkdir -p site
+
+          # Supported browsers (keep in sync with matrix)
+          BROWSERS=("chromium" "firefox" "webkit")
+
+          for B in "${BROWSERS[@]}"; do
+            # HTML report
+            if [ -d "artifacts/playwright-html-report-${B}" ]; then
+              mkdir -p "site/${B}/playwright-report"
+              cp -r "artifacts/playwright-html-report-${B}/." "site/${B}/playwright-report/"
+            fi
+
+            # Allure report (optional)
+            if [ -d "artifacts/allure-html-report-${B}" ]; then
+              mkdir -p "site/${B}/allure-report"
+              cp -r "artifacts/allure-html-report-${B}/." "site/${B}/allure-report/"
+            fi
+          done
+
+          # Create simple index.html if you don't have a landing page,
+          # otherwise we will prefer repo's landing/index.html
+          cat > site/index.html <<'EOF'
+          <!doctype html>
+          <html>
+          <head>
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <title>Playwright Reports</title>
+            <style>
+              body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+              h1 { margin-bottom: 0.25rem; }
+              small { color: #666; }
+              .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1rem; }
+              .card { border: 1px solid #eee; border-radius: 12px; padding: 1rem; }
+              .card h2 { margin-top: 0; font-size: 1.1rem; }
+              a { text-decoration: none; }
+              ul { margin: 0.5rem 0 0 1.25rem; }
+            </style>
+          </head>
+          <body>
+            <h1>Playwright Reports</h1>
+            <small>Build time: {{BUILD_TIME}}</small>
+            <div class="grid">
+              <!--CARDS-->
+            </div>
+          </body>
+          </html>
+          EOF
+
+          # Inject cards for each browser that has reports
+          cards=""
+          for B in "${BROWSERS[@]}"; do
+            has_html=""
+            has_allu_
