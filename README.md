@@ -52,20 +52,6 @@
 
 ---
 
-## How to run locally
-
-```bash
-npm i
-npm run pw:install
-npm test
-npm run report   # opens Playwright HTML report
-# Allure (optional):
-npx allure generate ./allure-results --clean -o ./allure-report
-# open ./allure-report/index.html in a browser
-> Note: Everything (tests, CI and reports) lives in **main** on purpose — simpler to clone, run and review for a portfolio project.
-
----
-
 ## 🚀 Quick start
 
 ```bash
