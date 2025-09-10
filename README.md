@@ -6,9 +6,10 @@
 [![Reports](https://img.shields.io/badge/📊%20Test%20Reports-Live%20on%20GitHub%20Pages-brightgreen)](https://tosheto.github.io/playwright-portfolio/)
 ![Algorithms](https://img.shields.io/badge/Algorithms-Ready-informational)
 ![Blockchain%20QA](https://img.shields.io/badge/Blockchain%20QA-Portfolio-blueviolet)
+## Connect with me
 
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/todor-stavrev-7843105b/)
 
-**LinkedIn:** [Todor Stavrev](https://www.linkedin.com/in/todor-stavrev-7843105b/)
 
 
 ---
