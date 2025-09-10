@@ -46,59 +46,45 @@ npm run report
 ```
 Run a single test
 
-# by file
+ by file
+```bash
 npx playwright test tests/specs/docs.spec.ts
-
-# by title
+```
+## by title
+```bash
 npx playwright test -g "assertions page shows code block"
-🧪 What’s inside
-UI specs: tests/specs/*.spec.ts
+```
+## 🧪 What’s inside
+  - UI specs: tests/specs/*.spec.ts
+  - API spec: tests/specs/api.spec.ts
+  - Uses request.newContext() + apiContext.get/post(...)
+  - Validates status codes + JSON payloads
+  - Artifacts demo: tests/specs/artifacts-demo.spec.ts
+  - Intentionally fails with test.fail(true, ...) so the run stays ✅ green
+  - Generates trace/video/screenshot for demonstration
+  - Global settings (retries, trace, screenshot, video) are in playwright.config.ts.
 
-API spec: tests/specs/api.spec.ts
+## 📦 Key files
 
-Uses request.newContext() + apiContext.get/post(...)
+  - playwright.config.ts – baseURL, retries, trace/video/screenshot policy, reporters
+  - tests/specs/api.spec.ts – API testing via APIRequestContext (GET/POST)
+  - tests/specs/artifacts-demo.spec.ts – expected-fail test that always produces artifacts
+  - tests/pages/*.ts – Page Objects (navigation & actions)
+  - tests/helpers/selectors.ts – centralized selectors
+  - .github/workflows/playwright.yml – CI pipeline (run → collect reports → publish to Pages)
 
-Validates status codes + JSON payloads
+ ⚙️ CI Pipeline
 
-Artifacts demo: tests/specs/artifacts-demo.spec.ts
+   Workflow: .github/workflows/playwright.yml
+    On each push/PR it:
+    - Installs deps & Playwright browsers
+    - Runs tests headlessly
+    - Uploads the Playwright HTML and (optionally) Allure results
+    - Publishes static reports to GitHub Pages (see links above)
 
-Intentionally fails with test.fail(true, ...) so the run stays ✅ green
+## 🧑‍💻 Tech notes
 
-Generates trace/video/screenshot for demonstration
-
-Global settings (retries, trace, screenshot, video) are in playwright.config.ts.
-
-📦 Key files
-playwright.config.ts – baseURL, retries, trace/video/screenshot policy, reporters
-
-tests/specs/api.spec.ts – API testing via APIRequestContext (GET/POST)
-
-tests/specs/artifacts-demo.spec.ts – expected-fail test that always produces artifacts
-
-tests/pages/*.ts – Page Objects (navigation & actions)
-
-tests/helpers/selectors.ts – centralized selectors
-
-.github/workflows/playwright.yml – CI pipeline (run → collect reports → publish to Pages)
-
-⚙️ CI Pipeline
-Workflow: .github/workflows/playwright.yml
-
-On each push/PR it:
-
-Installs deps & Playwright browsers
-
-Runs tests headlessly
-
-Uploads the Playwright HTML and (optionally) Allure results
-
-Publishes static reports to GitHub Pages (see links above)
-
-🧑‍💻 Tech notes
-Selectors: prefer role-based locators; CSS centralized in tests/helpers/selectors.ts
-
-Stability: retries + artifacts enabled in config (trace: 'on-first-retry', screenshot: 'only-on-failure', video: 'retain-on-failure')
-
-POM: page classes encapsulate flows and assertions
-
-Artifacts: download/open traces & videos directly from the Playwright report
+  - Selectors: prefer role-based locators; CSS centralized in tests/helpers/selectors.ts
+  - Stability: retries + artifacts enabled in config (trace: 'on-first-retry', screenshot: 'only-on-failure', video: 'retain-on-failure')
+  - POM: page classes encapsulate flows and assertions
+  - Artifacts: download/open traces & videos directly from the Playwright report
