@@ -5,7 +5,6 @@ on:
     branches: [ main, master ]
   pull_request:
 
-# Default minimal permissions; deploy job will get extra pages permissions
 permissions:
   contents: read
 
@@ -38,11 +37,9 @@ jobs:
       - name: Install Playwright browser (${{ matrix.browser }})
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
-      # Run tests with both HTML + Allure reporters for the specific project
       - name: Run Playwright tests (${{ matrix.browser }})
         run: npx playwright test --project=${{ matrix.browser }} --reporter=line,html,allure-playwright
 
-      # Upload Playwright HTML report as artifact (per browser)
       - name: Upload Playwright HTML report (artifact)
         if: always()
         uses: actions/upload-artifact@v4
@@ -52,7 +49,6 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-      # Check if Allure results exist to avoid failures when empty
       - name: Check if Allure results exist
         id: allure_check
         shell: bash
@@ -98,62 +94,84 @@ jobs:
           path: ./artifacts
           merge-multiple: true
 
-      - name: Build site folder (per browser)
+      - name: Build site folder (aggregate)
         shell: bash
         run: |
           set -euo pipefail
           rm -rf site
           mkdir -p site
 
-          # Supported browsers (keep in sync with matrix)
-          BROWSERS=("chromium" "firefox" "webkit")
+          browsers=(chromium firefox webkit)
 
-          for B in "${BROWSERS[@]}"; do
-            # HTML report
-            if [ -d "artifacts/playwright-html-report-${B}" ]; then
-              mkdir -p "site/${B}/playwright-report"
-              cp -r "artifacts/playwright-html-report-${B}/." "site/${B}/playwright-report/"
+          # Copy reports under site/{browser}/...
+          for b in "${browsers[@]}"; do
+            if [ -d "artifacts/playwright-html-report-$b" ]; then
+              mkdir -p "site/$b/playwright-report"
+              cp -r "artifacts/playwright-html-report-$b/." "site/$b/playwright-report/"
             fi
-
-            # Allure report (optional)
-            if [ -d "artifacts/allure-html-report-${B}" ]; then
-              mkdir -p "site/${B}/allure-report"
-              cp -r "artifacts/allure-html-report-${B}/." "site/${B}/allure-report/"
+            if [ -d "artifacts/allure-html-report-$b" ]; then
+              mkdir -p "site/$b/allure-report"
+              cp -r "artifacts/allure-html-report-$b/." "site/$b/allure-report/"
             fi
           done
 
-          # Create simple index.html if you don't have a landing page,
-          # otherwise we will prefer repo's landing/index.html
-          cat > site/index.html <<'EOF'
-          <!doctype html>
-          <html>
-          <head>
-            <meta charset="utf-8"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1"/>
-            <title>Playwright Reports</title>
-            <style>
-              body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
-              h1 { margin-bottom: 0.25rem; }
-              small { color: #666; }
-              .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1rem; }
-              .card { border: 1px solid #eee; border-radius: 12px; padding: 1rem; }
-              .card h2 { margin-top: 0; font-size: 1.1rem; }
-              a { text-decoration: none; }
-              ul { margin: 0.5rem 0 0 1.25rem; }
-            </style>
-          </head>
-          <body>
-            <h1>Playwright Reports</h1>
-            <small>Build time: {{BUILD_TIME}}</small>
-            <div class="grid">
-              <!--CARDS-->
-            </div>
-          </body>
-          </html>
-          EOF
+          build_time="$(date -u +'%Y-%m-%d %H:%M UTC')"
 
-          # Inject cards for each browser that has reports
-          cards=""
-          for B in "${BROWSERS[@]}"; do
-            has_html=""
-            has_allu_
+          # Create root index.html (simple echoes; no heredoc/sed)
+          {
+            echo '<!doctype html>'
+            echo '<html>'
+            echo '<head>'
+            echo '  <meta charset="utf-8"/>'
+            echo '  <meta name="viewport" content="width=device-width, initial-scale=1"/>'
+            echo '  <title>Playwright Reports</title>'
+            echo '  <style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:2rem;}h1{margin-bottom:.25rem;}small{color:#666}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1rem}.card{border:1px solid #eee;border-radius:12px;padding:1rem}.card h2{margin-top:0;font-size:1.1rem;text-transform:capitalize}a{text-decoration:none}ul{margin:.5rem 0 0 1.25rem}</style>'
+            echo '</head>'
+            echo '<body>'
+            echo "  <h1>Playwright Reports</h1><small>Build time: ${build_time}</small>"
+            echo '  <div class="grid">'
+          } > site/index.html
+
+          for b in "${browsers[@]}"; do
+            has_html=false
+            has_allure=false
+            [ -d "site/$b/playwright-report" ] && has_html=true
+            [ -d "site/$b/allure-report" ] && has_allure=true
+
+            if $has_html || $has_allure; then
+              {
+                echo "    <div class=\"card\"><h2>${b}</h2><ul>"
+                $has_html && echo "      <li><a href=\"${b}/playwright-report/index.html\">Playwright HTML</a></li>"
+                $has_allure && echo "      <li><a href=\"${b}/allure-report/index.html\">Allure HTML</a></li>"
+                echo "    </ul></div>"
+              } >> site/index.html
+            fi
+          done
+
+          {
+            echo '  </div>'
+            echo '</body>'
+            echo '</html>'
+          } >> site/index.html
+
+      - name: Upload site artifact for Pages
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: package-site
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
