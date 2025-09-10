@@ -41,10 +41,9 @@ npm i
 npm run pw:install
 npm test
 npm run report
-npm test → runs the full suite headlessly
-
-npm run report → opens the local Playwright HTML report
-
+npm test 
+npm run report 
+```
 Run a single test
 
 # by file
