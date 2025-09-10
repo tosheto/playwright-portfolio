@@ -8,6 +8,9 @@
 ![Blockchain%20QA](https://img.shields.io/badge/Blockchain%20QA-Portfolio-blueviolet)
 
 
+**LinkedIn:** [Todor Stavrev](https://www.linkedin.com/in/todor-stavrev-7843105b/)
+
+
 ---
 
 ## Live Reports
