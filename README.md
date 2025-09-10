@@ -44,13 +44,7 @@ npm run report
 npm test 
 npm run report 
 ```
-Run a single test
-
- by file
-```bash
-npx playwright test tests/specs/docs.spec.ts
-```
-## by title
+## Бy title
 ```bash
 npx playwright test -g "assertions page shows code block"
 ```
@@ -73,7 +67,7 @@ npx playwright test -g "assertions page shows code block"
   - tests/helpers/selectors.ts – centralized selectors
   - .github/workflows/playwright.yml – CI pipeline (run → collect reports → publish to Pages)
 
- ⚙️ CI Pipeline
+## ⚙️ CI Pipeline
 
    Workflow: .github/workflows/playwright.yml
     On each push/PR it:
