@@ -44,10 +44,6 @@ npm run report
 npm test 
 npm run report 
 ```
-## Бy title
-```bash
-npx playwright test -g "assertions page shows code block"
-```
 ## 🧪 What’s inside
   - UI specs: tests/specs/*.spec.ts
   - API spec: tests/specs/api.spec.ts
