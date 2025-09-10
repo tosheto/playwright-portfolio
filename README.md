@@ -20,15 +20,58 @@ Reports are re-generated on every CI run.
 
 ---
 
-## 📖 Overview
+## Live Reports
 
-This is a **QA portfolio** showcasing:
+- **Playwright HTML Report** — steps, logs, screenshots, trace links:  
+  https://tosheto.github.io/playwright-portfolio/playwright-report/index.html
+- **Allure Report** — suites, categories, trends & analytics:  
+  https://tosheto.github.io/playwright-portfolio/allure-report/index.html
 
-- ✅ UI tests with **Playwright + TypeScript**
-- 🧩 **Page Object Model (POM)** for maintainability
-- 🌐 **API tests** using Playwright `APIRequestContext` (GET/POST + assertions)
-- 🎞️ **Failure artifacts** on any failed test: **screenshot**, **video**, **trace**
-- ⚙️ CI/CD with **GitHub Actions**, reports published to **GitHub Pages**
+> Reports are re-generated on every push/PR via GitHub Actions.
+
+---
+
+## What this project tests
+
+| Area | Spec file | What it verifies | Key assertions / notes |
+|---|---|---|---|
+| **Accessibility (a11y smoke)** | `tests/specs/a11y.smoke.spec.ts` | Presence of core ARIA landmarks on key pages | `banner`, `navigation`, `main`, `footer` on home/docs |
+| **Public API (GET/POST)** | `tests/specs/api.spec.ts` | HTTP status codes and JSON payload shape using `jsonplaceholder` | `GET /posts/1` ⇒ 200 + expected fields; `POST /posts` ⇒ 201 + `id` |
+| **Artifacts demo** | `tests/specs/artifacts-demo.spec.ts` | How traces, videos and screenshots are collected on failure | Intentionally triggers artifacts for demo purposes |
+| **Docs UI** | `tests/specs/docs.spec.ts` | Navigation and headings in the docs section | Page titles, visible sections, basic smoke checks |
+| **Home UI** | `tests/specs/home.spec.ts` | Hero/intro, CTAs and structure | `toHaveTitle`, visible elements, navigation |
+| **Navbar** | `tests/specs/navbar.spec.ts` | Header/menu links | Visibility + navigation |
+| **Footer** | `tests/specs/footer.spec.ts` | Footer links & copyright | Structure + working links |
+| **Search** | `tests/specs/search.spec.ts` | Search input and results | Typing queries, results shown |
+| **Graph/visuals** | `tests/specs/graph.spec.ts` | Graph/chart rendering | Expected nodes/elements are visible |
+| **Code blocks** | `tests/specs/codeblocks.spec.ts` | Code examples render on key pages | At least one code block per page |
+| **Example** | `tests/specs/example.spec.ts` | Minimal smoke: title + navigation to iana.org | Basic selector usage with Playwright |
+
+> All UI specs run against the `baseURL` from `playwright.config.ts` across **Chromium / Firefox / WebKit**.
+
+---
+
+## Tech stack
+
+- **Playwright + @playwright/test** (TypeScript)
+- **POM (Page Object Model)** — `tests/pages/*` encapsulate selectors + actions
+- **Helpers/fixtures** — `tests/helpers/*`, `tests/fixtures/*`
+- **Reporters** — `html` + `allure-playwright`
+- **Artifacts policy** (in `playwright.config.ts`):  
+  `trace: 'on-first-retry'`, `screenshot: 'only-on-failure'`, `video: 'retain-on-failure'`
+
+---
+
+## How to run locally
+
+```bash
+npm i
+npm run pw:install
+npm test
+npm run report   # opens Playwright HTML report
+# Allure (optional):
+npx allure generate ./allure-results --clean -o ./allure-report
+# open ./allure-report/index.html in a browser
 
 > Note: Everything (tests, CI and reports) lives in **main** on purpose — simpler to clone, run and review for a portfolio project.
 
