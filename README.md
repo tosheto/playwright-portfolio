@@ -7,16 +7,6 @@
 ![Algorithms](https://img.shields.io/badge/Algorithms-Ready-informational)
 ![Blockchain%20QA](https://img.shields.io/badge/Blockchain%20QA-Portfolio-blueviolet)
 
----
-
-## 🔗 Live Reports
-
-- **Playwright HTML Report** – interactive run details (steps, logs, screenshots):  
-  https://tosheto.github.io/playwright-portfolio/playwright-report/index.html
-- **Allure Report** – suites, categories, trends & analytics:  
-  https://tosheto.github.io/playwright-portfolio/allure-report/index.html
-
-Reports are re-generated on every CI run.
 
 ---
 
@@ -72,7 +62,6 @@ npm run report   # opens Playwright HTML report
 # Allure (optional):
 npx allure generate ./allure-results --clean -o ./allure-report
 # open ./allure-report/index.html in a browser
-
 > Note: Everything (tests, CI and reports) lives in **main** on purpose — simpler to clone, run and review for a portfolio project.
 
 ---
