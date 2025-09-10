@@ -65,12 +65,12 @@ npm run report
 
 ## ⚙️ CI Pipeline
 
-    -  Workflow: .github/workflows/playwright.yml
-    - On each push/PR it:
-    - Installs deps & Playwright browsers
-    - Runs tests headlessly
-    - Uploads the Playwright HTML and (optionally) Allure results
-    - Publishes static reports to GitHub Pages (see links above)
+  -  Workflow: .github/workflows/playwright.yml
+  - On each push/PR it:
+  - Installs deps & Playwright browsers
+  - Runs tests headlessly
+  - Uploads the Playwright HTML and (optionally) Allure results
+  - Publishes static reports to GitHub Pages (see links above)
 
 ## 🧑‍💻 Tech notes
 
