@@ -11,8 +11,6 @@
 
 ## 🔗 Live Reports
 
-👉 **Latest run:** https://tosheto.github.io/playwright-portfolio/
-
 - **Playwright HTML Report** – interactive run details (steps, logs, screenshots):  
   https://tosheto.github.io/playwright-portfolio/playwright-report/index.html
 - **Allure Report** – suites, categories, trends & analytics:  
