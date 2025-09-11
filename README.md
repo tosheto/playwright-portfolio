@@ -64,7 +64,6 @@ npm run pw:install
 npm test
 npm run report
 npm test 
-npm run report 
 ```
 ## 🧪 What’s inside
 
@@ -86,23 +85,6 @@ npm run report
     4. Publishes static reports to GitHub Pages:
        - /playwright-report/index.html
        - /allure-report/index.html
-       - 
-### Running specific tests
-
-```bash
-# Accessibility only
-npx playwright test tests/specs/a11y.smoke.spec.ts
-
-# API only
-npx playwright test tests/specs/api.spec.ts
-
-# Match by pattern (docs & home)
-npx playwright test "tests/specs/{docs,home}.spec.ts"
-
-# Run headed / debug mode
-npm run test:headed
-npm run test:debug
-
 
 ## 📦 Artifacts & debugging
 
