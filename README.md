@@ -24,7 +24,26 @@
 > Reports are re-generated on every push/PR via GitHub Actions.
 
 ---
+## Tech stack
 
+- **Playwright + @playwright/test** (TypeScript)
+- **POM (Page Object Model)** — `tests/pages/*` encapsulate selectors + actions
+- **Helpers/fixtures** — `tests/helpers/*`, `tests/fixtures/*`
+- **Reporters** — `html` + `allure-playwright`
+- **Artifacts policy** (in `playwright.config.ts`):  
+  `trace: 'on-first-retry'`, `screenshot: 'only-on-failure'`, `video: 'retain-on-failure'`
+---
+## ⚙️ CI pipeline (GitHub Actions)
+
+  -  Workflow: .github/workflows/playwright.yml
+  - On every push/PR it:
+    1. Installs deps & Playwright browsers
+    2. Runs the full suite (all projects)
+    3. Produces one Allure report report and one Playwright HTML
+    4. Publishes static reports to GitHub Pages:
+       - /playwright-report/index.html
+       - /allure-report/index.html
+---
 ## What this project tests
 
 | Area | Spec file | What it verifies | Key assertions / notes |
@@ -44,18 +63,6 @@
 > All UI specs run against the `baseURL` from `playwright.config.ts` across **Chromium / Firefox / WebKit**.
 
 ---
-
-## Tech stack
-
-- **Playwright + @playwright/test** (TypeScript)
-- **POM (Page Object Model)** — `tests/pages/*` encapsulate selectors + actions
-- **Helpers/fixtures** — `tests/helpers/*`, `tests/fixtures/*`
-- **Reporters** — `html` + `allure-playwright`
-- **Artifacts policy** (in `playwright.config.ts`):  
-  `trace: 'on-first-retry'`, `screenshot: 'only-on-failure'`, `video: 'retain-on-failure'`
-
----
-
 ## 🚀 Quick start
 
 ```bash
@@ -74,17 +81,6 @@ npm test
   - screenshots  
   - videos
 - **Global settings**: retries, trace/screenshot/video policies, and reporters are all configured in `playwright.config.ts`
-
-## ⚙️ CI pipeline (GitHub Actions)
-
-  -  Workflow: .github/workflows/playwright.yml
-  - On every push/PR it:
-    1. Installs deps & Playwright browsers
-    2. Runs the full suite (all projects)
-    3. Produces one Allure report report and one Playwright HTML
-    4. Publishes static reports to GitHub Pages:
-       - /playwright-report/index.html
-       - /allure-report/index.html
 
 ## 📦 Artifacts & debugging
 
